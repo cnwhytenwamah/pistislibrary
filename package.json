@@ -1,0 +1,18 @@
+{
+  "name": "pistislibrary",
+  "private": true,
+  "description": "PistisLibrary: a digital library for Christian books",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "infra:up": "docker compose up -d",
+    "infra:down": "docker compose down",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:worker": "npm --prefix backend run worker:dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "migrate": "npm --prefix backend run migrate",
+    "migrate:undo": "npm --prefix backend run migrate:undo",
+    "seed": "npm --prefix backend run seed",
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend exec tsc -- --noEmit",
+    "verify": "npm --prefix backend run verify:foundation"
+  }
+}

@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+/*
+  PistisLibrary design tokens: "Brown Neon / Black Tech".
+  Dark foundation; copper tones are accents (borders, glows, highlights), never large blocks.
+  Note: --color-ink-muted has low contrast on the darkest backgrounds. Use it only for
+  decorative or disabled text; use --color-ink-soft for readable secondary text.
+*/
+@theme {
+  --color-night: #050505;
+  --color-surface: #0d0b0a;
+  --color-umber: #1a0f0a;
+  --color-brown: #3a1f14;
+  --color-copper: #a85c32;
+  --color-copper-bright: #d9824b;
+  --color-copper-soft: #f0a06a;
+  --color-ink: #f5f1ed;
+  --color-ink-soft: #b8ada5;
+  --color-ink-muted: #756b65;
+  --color-line: #2a1a14;
+
+  --font-sans: ui-sans-serif, system-ui, sans-serif;
+
+  --shadow-glow: 0 0 28px -6px rgb(168 92 50 / 0.5);
+  --shadow-glow-strong: 0 0 36px -4px rgb(217 130 75 / 0.55);
+}
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-night);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--color-copper);
+  color: var(--color-ink);
+}
+
+/* Visible keyboard focus everywhere */
+:focus-visible {
+  outline: 2px solid var(--color-copper-soft);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Soft copper aura behind hero areas */
+.bg-aura {
+  background:
+    radial-gradient(60rem 30rem at 50% -10%, rgb(168 92 50 / 0.22), transparent 70%),
+    radial-gradient(40rem 24rem at 90% 110%, rgb(58 31 20 / 0.55), transparent 70%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
