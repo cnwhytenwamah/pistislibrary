@@ -25,13 +25,12 @@ const toJSON = async (a: AuthorLike) => ({
 
 export const authorService = {
   async list(query: ListAuthorsQuery, opts: { onlyWithBooks: boolean }) {
-    const rows = await authorRepository.list({
+    const { rows, total } = await authorRepository.list({
       q: query.q || undefined,
       onlyWithBooks: opts.onlyWithBooks,
       limit: query.limit,
       offset: toOffset(query.page, query.limit),
     });
-    const total = rows[0]?.total ?? 0;
     return {
       data: await Promise.all(rows.map(async (r) => ({ ...(await toJSON(r)), bookCount: r.bookCount }))),
       meta: paginationMeta(query.page, query.limit, total),

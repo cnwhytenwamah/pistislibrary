@@ -29,7 +29,7 @@ Node.js 20+, Docker (or your own PostgreSQL 14+, Redis 6+ and S3-compatible stor
 npm run install:all
 
 cp backend/.env.example backend/.env       # set JWT_ACCESS_SECRET and GOOGLE_CLIENT_IDS
-cp frontend/.env.example frontend/.env.local
+cp frontend/.env.example frontend/.env.local   # optional: NEXT_PUBLIC_GOOGLE_CLIENT_ID for Google sign-in
 
 npm run infra:up                           # PostgreSQL, Redis, MinIO
 # create the bucket named in S3_BUCKET (default "pistis-library") at http://localhost:9001
@@ -78,7 +78,7 @@ npm run verify
 | 1 Foundation (monorepo, Next.js, Express, Sequelize, PostgreSQL, Redis, BullMQ, health checks) | ✅ |
 | 2 Authentication (email/password, Google sign-in, refresh rotation, roles) | ✅ |
 | 3 Library backend (authors, categories, multi-category books, files, uploads, publishing) | ✅ |
-| 4 Library frontend | ⬜ |
+| 4 Library frontend (home, library, search and filters, categories, authors, book pages, SEO, login/register UI) | ✅ |
 | 5 Reading, bookmarks, downloads | ⬜ |
 | 6 Book requests | ⬜ |
 | 7 Notifications | ⬜ |

@@ -42,7 +42,13 @@ export const authorRepository = {
     const havingSql = params.onlyWithBooks
       ? "HAVING COUNT(b.id) FILTER (WHERE b.status = 'PUBLISHED') > 0"
       : "";
-    return sequelize.query<AuthorRow>(
+    const replacements = {
+      pattern: params.q ? `%${escapeLike(params.q)}%` : null,
+      limit: params.limit,
+      offset: params.offset,
+    };
+
+    const rows = await sequelize.query<AuthorRow>(
       `SELECT a.id, a.name, a.slug, a.bio, a.photo_key AS "photoKey",
               (COUNT(b.id) FILTER (WHERE b.status = 'PUBLISHED'))::int AS "bookCount",
               (COUNT(*) OVER())::int AS total
@@ -53,14 +59,25 @@ export const authorRepository = {
        ${havingSql}
        ORDER BY a.name
        LIMIT :limit OFFSET :offset`,
-      {
-        replacements: {
-          pattern: params.q ? `%${escapeLike(params.q)}%` : null,
-          limit: params.limit,
-          offset: params.offset,
-        },
-        type: QueryTypes.SELECT,
-      }
+      { replacements, type: QueryTypes.SELECT }
     );
+
+    let total = rows[0]?.total ?? 0;
+    if (rows.length === 0 && params.offset > 0) {
+      // Page past the end: count separately so callers still get the real total
+      const [row] = await sequelize.query<{ total: number }>(
+        `SELECT COUNT(*)::int AS total FROM (
+           SELECT a.id
+           FROM authors a
+           LEFT JOIN books b ON b.author_id = a.id
+           ${whereSql}
+           GROUP BY a.id
+           ${havingSql}
+         ) t`,
+        { replacements, type: QueryTypes.SELECT }
+      );
+      total = row?.total ?? 0;
+    }
+    return { rows, total };
   },
 };

@@ -109,7 +109,20 @@ export const bookRepository = {
       { replacements: rep, type: QueryTypes.SELECT }
     );
 
-    return { ids: rows.map((r) => r.id), total: rows[0]?.total ?? 0 };
+    let total = rows[0]?.total ?? 0;
+    if (rows.length === 0 && f.offset > 0) {
+      // Requested page is past the end: the window count is gone, so count separately
+      const [row] = await sequelize.query<{ total: number }>(
+        `SELECT COUNT(*)::int AS total
+         FROM books b
+         JOIN authors a ON a.id = b.author_id
+         WHERE ${where.join(" AND ")}`,
+        { replacements: rep, type: QueryTypes.SELECT }
+      );
+      total = row?.total ?? 0;
+    }
+
+    return { ids: rows.map((r) => r.id), total };
   },
 
   /** Loads books with relations, preserving the order of `ids`. */
